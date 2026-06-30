@@ -439,5 +439,4 @@ pcso-results-downloader/
 
 ## License
 
-Add a `LICENSE` file at the project root if you intend to share this. Without
-one the default in many jurisdictions is "all rights reserved."
+MIT — see [LICENSE](LICENSE).

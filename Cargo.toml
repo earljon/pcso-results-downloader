@@ -2,6 +2,10 @@
 name = "pcso-results-downloader"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "CLI that scrapes PCSO lotto result pages and archives them to S3"
+repository = "https://github.com/earljon/pcso-results-downloader"
+readme = "README.md"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }

@@ -1,8 +1,8 @@
 use std::time::Duration;
 
 use aws_sdk_s3::Client as S3Client;
-use chrono::NaiveDate;
 use chromiumoxide::Browser;
+use chrono::NaiveDate;
 use tokio::time::sleep;
 use tracing::{error, info, warn};
 

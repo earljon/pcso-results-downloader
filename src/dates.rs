@@ -21,8 +21,9 @@ impl DateSpec {
     pub fn first_day(self) -> NaiveDate {
         match self {
             DateSpec::Day(d) => d,
-            DateSpec::Month { year, month } => NaiveDate::from_ymd_opt(year, month, 1)
-                .expect("validated month/year"),
+            DateSpec::Month { year, month } => {
+                NaiveDate::from_ymd_opt(year, month, 1).expect("validated month/year")
+            }
         }
     }
 
@@ -69,18 +70,18 @@ fn try_parse_month_spec(s: &str) -> Option<DateSpec> {
 
 fn parse_month_name(s: &str) -> Option<u32> {
     match s.trim().to_ascii_lowercase().as_str() {
-        "january"   | "jan" => Some(1),
-        "february"  | "feb" => Some(2),
-        "march"     | "mar" => Some(3),
-        "april"     | "apr" => Some(4),
-        "may"               => Some(5),
-        "june"      | "jun" => Some(6),
-        "july"      | "jul" => Some(7),
-        "august"    | "aug" => Some(8),
+        "january" | "jan" => Some(1),
+        "february" | "feb" => Some(2),
+        "march" | "mar" => Some(3),
+        "april" | "apr" => Some(4),
+        "may" => Some(5),
+        "june" | "jun" => Some(6),
+        "july" | "jul" => Some(7),
+        "august" | "aug" => Some(8),
         "september" | "sep" => Some(9),
-        "october"   | "oct" => Some(10),
-        "november"  | "nov" => Some(11),
-        "december"  | "dec" => Some(12),
+        "october" | "oct" => Some(10),
+        "november" | "nov" => Some(11),
+        "december" | "dec" => Some(12),
         _ => None,
     }
 }
@@ -176,23 +177,35 @@ mod tests {
     #[test]
     fn parses_day_spec() {
         let s = parse_date_spec("03-05-2026").unwrap();
-        assert_eq!(s, DateSpec::Day(NaiveDate::from_ymd_opt(2026, 3, 5).unwrap()));
+        assert_eq!(
+            s,
+            DateSpec::Day(NaiveDate::from_ymd_opt(2026, 3, 5).unwrap())
+        );
         assert_eq!(s.first_day(), s.last_day());
     }
 
     #[test]
     fn parses_month_spec_full_name() {
         let s = parse_date_spec("March-2022").unwrap();
-        assert_eq!(s, DateSpec::Month { year: 2022, month: 3 });
+        assert_eq!(
+            s,
+            DateSpec::Month {
+                year: 2022,
+                month: 3
+            }
+        );
         assert_eq!(s.first_day(), NaiveDate::from_ymd_opt(2022, 3, 1).unwrap());
-        assert_eq!(s.last_day(),  NaiveDate::from_ymd_opt(2022, 3, 31).unwrap());
+        assert_eq!(s.last_day(), NaiveDate::from_ymd_opt(2022, 3, 31).unwrap());
     }
 
     #[test]
     fn parses_month_spec_abbrev_case_insensitive() {
         assert_eq!(
             parse_date_spec("feb-2024").unwrap(),
-            DateSpec::Month { year: 2024, month: 2 }
+            DateSpec::Month {
+                year: 2024,
+                month: 2
+            }
         );
         // leap year — last day is the 29th
         assert_eq!(
@@ -205,7 +218,7 @@ mod tests {
     fn parses_december_edge() {
         let s = parse_date_spec("December-2025").unwrap();
         assert_eq!(s.first_day(), NaiveDate::from_ymd_opt(2025, 12, 1).unwrap());
-        assert_eq!(s.last_day(),  NaiveDate::from_ymd_opt(2025, 12, 31).unwrap());
+        assert_eq!(s.last_day(), NaiveDate::from_ymd_opt(2025, 12, 31).unwrap());
     }
 
     #[test]

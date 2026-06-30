@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
-use chrono::{Datelike, NaiveDate};
 use chromiumoxide::browser::{Browser, BrowserConfig};
 use chromiumoxide::cdp::browser_protocol::browser::{
     Bounds, GetWindowForTargetParams, SetWindowBoundsParams, WindowState,
@@ -12,6 +11,7 @@ use chromiumoxide::cdp::browser_protocol::emulation::{
 };
 use chromiumoxide::cdp::browser_protocol::network::SetExtraHttpHeadersParams;
 use chromiumoxide::Page;
+use chrono::{Datelike, NaiveDate};
 use futures::StreamExt;
 use serde_json::Value;
 use tokio::task::JoinHandle;
@@ -28,8 +28,7 @@ const POLL_INTERVAL: Duration = Duration::from_millis(250);
 const CHALLENGE_SETTLE: Duration = Duration::from_secs(3);
 
 // Matches the working Node/Playwright version on the Pi.
-const USER_AGENT: &str =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
+const USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
      (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";
 const LOCALE: &str = "en-US";
 const TIMEZONE: &str = "Asia/Manila";
@@ -205,7 +204,9 @@ async fn minimize_window(browser: &Browser) -> Result<()> {
     let _ = page.execute(off_params).await;
 
     // Then ask the OS to minimize, so it doesn't even show in mission control.
-    let min_bounds = Bounds::builder().window_state(WindowState::Minimized).build();
+    let min_bounds = Bounds::builder()
+        .window_state(WindowState::Minimized)
+        .build();
     let min_params = SetWindowBoundsParams::builder()
         .window_id(win.result.window_id)
         .bounds(min_bounds)
@@ -294,7 +295,8 @@ async fn apply_stealth_overrides(page: &Page) -> Result<()> {
 
 async fn wait_until_true(page: &Page, predicate_js: &str, what: &str) -> Result<()> {
     let deadline = Instant::now() + PAGE_TIMEOUT;
-    let script = format!("(() => {{ try {{ return ({predicate_js}); }} catch (_) {{ return false; }} }})()");
+    let script =
+        format!("(() => {{ try {{ return ({predicate_js}); }} catch (_) {{ return false; }} }})()");
     let mut last_log = Instant::now();
     loop {
         match page.evaluate(script.as_str()).await {
@@ -367,7 +369,9 @@ async fn fill_form_and_submit(page: &Page, date: NaiveDate) -> Result<()> {
             }};
         }})()
         "#,
-        month = month, day = day, year = year,
+        month = month,
+        day = day,
+        year = year,
     );
 
     let result = page
