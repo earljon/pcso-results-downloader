@@ -1,0 +1,22 @@
+[package]
+name = "pcso-results-downloader"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+chrono-tz = "0.10"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "signal"] }
+chromiumoxide = { version = "0.9", default-features = false }
+aws-config = { version = "1", features = ["behavior-version-latest"] }
+aws-sdk-s3 = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "1"
+anyhow = "1"
+futures = "0.3"
+serde_json = "1"
+
+[profile.release]
+lto = "thin"
